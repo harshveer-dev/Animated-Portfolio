@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Primary SEO Metadata -->
+  <title>Harshveer Singh | Developer Portfolio</title>
+  <meta name="description" content="Portfolio of Harshveer Singh, a BCA student and developer building Python, web, database and interactive software projects.">
+  <meta name="author" content="Harshveer Singh">
+  <meta name="theme-color" content="#050713">
+
+  <!-- Open Graph / Social Sharing -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://github.com/harshveer-dev">
+  <meta property="og:title" content="Harshveer Singh | Developer Portfolio">
+  <meta property="og:description" content="Cinematic 3D Developer Portfolio of Harshveer Singh — BCA student exploring Python, Tkinter, MySQL, and Web Development.">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1200&q=80">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Harshveer Singh | Developer Portfolio">
+  <meta name="twitter:description" content="Cinematic 3D interactive developer portfolio for Harshveer Singh.">
+
+  <!-- Cache Prevention for Live Development -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Lenis Momentum Smooth Scrolling Engine -->
+  <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css?v=2.3">
+</head>
+<body>
+
+  <!-- Peaceful Celestial Horizon Backdrop (Fixed across entire site, never disappears) -->
+  <div class="peaceful-backdrop" aria-hidden="true">
+    <img src="assets/peaceful_hero.jpg" alt="Peaceful celestial horizon" class="peaceful-backdrop-img" id="peaceful-backdrop-img">
+    <div class="peaceful-backdrop-overlay"></div>
+  </div>
+
+  <!-- 3D Cinematic WebGL Canvas (Three.js Space Corridor & Interactive Objects) -->
+  <div id="webgl-container" aria-hidden="true"></div>
+
+  <!-- Ambient Cursor Glow Effect -->
+  <div id="cursor-glow" aria-hidden="true"></div>
+
+  <!-- Scroll Progress Indicator -->
+  <div id="scroll-progress-fill" aria-hidden="true"></div>
+
+  <!-- Floating Navigation -->
+  <header class="cinematic-nav">
+    <nav class="nav-container" aria-label="Main Navigation">
+      <a href="#hero" class="nav-brand" aria-label="Harshveer Singh Home">
+        <span class="brand-dot"></span>
+        <span class="brand-name">HARSHVEER</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#hero" class="nav-link active">Home</a></li>
+        <li><a href="#about" class="nav-link">About</a></li>
+        <li><a href="#journey" class="nav-link">Journey</a></li>
+        <li><a href="#skills" class="nav-link">Skills</a></li>
+        <li><a href="#projects" class="nav-link">Projects</a></li>
+        <li><a href="#live-building" class="nav-link">Live</a></li>
+        <li><a href="#code" class="nav-link">Code</a></li>
+        <li><a href="#education" class="nav-link">Education</a></li>
+        <li><a href="#future" class="nav-link">Vision</a></li>
+        <li><a href="#contact" class="nav-link">Contact</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button id="hud-audio-btn" class="hud-btn" aria-label="Toggle Audio Effects">
+          <i data-lucide="volume-x" class="icon-xs"></i>
+          <span>SFX</span>
+        </button>
+        <button id="hud-studio-btn" class="hud-btn" aria-label="Open Cinematic Studio Tuner">
+          <i data-lucide="sliders" class="icon-xs"></i>
+          <span>TUNER</span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Cinematic Studio Drawer Panel (Live Tuning Controls) -->
+  <aside class="cinematic-studio-panel" id="cinematic-studio-panel" aria-label="Cinematic Studio Tuner">
+    <div class="studio-header">
+      <div class="studio-title">
+        <i data-lucide="sliders" class="icon-sm text-cyan"></i>
+        <span>CINEMATIC TUNER</span>
+      </div>
+      <button class="studio-close-btn" id="studio-close-btn" aria-label="Close Studio Tuner">&times;</button>
+    </div>
+
+    <div class="studio-controls-grid">
+      <div class="studio-field">
+        <div class="field-label-row">
+          <span>CAMERA TRAVEL SPEED</span>
+          <span class="field-value" id="val-speed">1.0x</span>
+        </div>
+        <input type="range" id="slider-speed" min="0.5" max="2.5" step="0.1" value="1.0">
+      </div>
+
+      <div class="studio-field">
+        <div class="field-label-row">
+          <span>MOUSE PARALLAX</span>
+          <span class="field-value" id="val-parallax">0.06</span>
+        </div>
+        <input type="range" id="slider-parallax" min="0.0" max="0.15" step="0.01" value="0.06">
+      </div>
+
+      <div class="studio-field">
+        <div class="field-label-row">
+          <span>ZOOM DEPTH</span>
+          <span class="field-value" id="val-zoom">189m</span>
+        </div>
+        <input type="range" id="slider-zoom" min="100" max="250" step="5" value="189">
+      </div>
+
+      <div class="studio-field">
+        <div class="field-label-row">
+          <span>DARKNESS</span>
+          <span class="field-value" id="val-darkness">65%</span>
+        </div>
+        <input type="range" id="slider-darkness" min="0.2" max="0.95" step="0.05" value="0.65">
+      </div>
+
+      <div class="studio-field">
+        <div class="field-label-row">
+          <span>CONTRAST</span>
+          <span class="field-value" id="val-contrast">1.12</span>
+        </div>
+        <input type="range" id="slider-contrast" min="0.8" max="1.6" step="0.02" value="1.12">
+      </div>
+
+      <div class="studio-field">
+        <div class="field-label-row">
+          <span>BLUR</span>
+          <span class="field-value" id="val-blur">0px</span>
+        </div>
+        <input type="range" id="slider-blur" min="0" max="15" step="1" value="0">
+      </div>
+    </div>
+
+    <div class="studio-footer">
+      <button class="hud-btn" id="studio-reset-btn" style="width: 100%; justify-content: center;">
+        <i data-lucide="rotate-ccw" class="icon-xs"></i>
+        <span>RESET DEFAULTS</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Scenes Container -->
+  <main>
+
+    <!-- SCENE 1: HERO / OPENING SCENE -->
+    <section id="hero" class="scene-section">
+      <div class="container hero-content">
+        <div class="hero-status-pill">
+          <span class="status-pulse-dot"></span>
+          <span>BCA 1ST YEAR • STUDENT DEVELOPER</span>
+        </div>
+
+        <h1 class="hero-title text-gradient">HARSHVEER SINGH</h1>
+        <h2 class="hero-role-tag">Developer • BCA Student • Builder</h2>
+
+        <p class="hero-subheading">
+          Turning ideas into interactive experiences and useful software.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#projects" class="btn-primary btn-magnetic">
+            <span>EXPLORE PROJECTS</span>
+            <i data-lucide="arrow-right" class="icon-sm"></i>
+          </a>
+          <a href="#contact" class="btn-secondary btn-magnetic">
+            <span>GET IN TOUCH</span>
+            <i data-lucide="mail" class="icon-sm"></i>
+          </a>
+        </div>
+
+        <a href="#about" class="hero-scroll-cue" aria-label="Scroll to explore">
+          <span>SCROLL TO EXPLORE</span>
+          <i data-lucide="chevron-down" class="icon-sm"></i>
+        </a>
+      </div>
+    </section>
+
+    <!-- SCENE 2: ABOUT ME -->
+    <section id="about" class="scene-section">
+      <div class="container">
+        <div class="section-tag">01 // IDENTITY & PURPOSE</div>
+        <h2 class="section-title">About Me</h2>
+
+        <div class="about-grid">
+          <div class="about-card cinematic-glass-card">
+            <p class="about-bio" id="about-bio-text">
+              Hi, I'm Harshveer Singh, a student developer currently pursuing BCA. I enjoy building software, experimenting with interfaces, learning new technologies, and turning ideas into working projects.
+            </p>
+
+            <div class="about-focus-title">Currently Developing Skills In:</div>
+            <div class="about-focus-grid" id="about-focus-pills">
+              <!-- Dynamically populated from portfolioData -->
+            </div>
+          </div>
+
+          <div class="about-visual-stats">
+            <div class="stat-box cinematic-glass-card">
+              <div class="stat-value">BCA</div>
+              <div class="stat-label">1st Year Student</div>
+            </div>
+            <div class="stat-box cinematic-glass-card">
+              <div class="stat-value">Core</div>
+              <div class="stat-label">Python & Databases</div>
+            </div>
+            <div class="stat-box cinematic-glass-card">
+              <div class="stat-value">Web</div>
+              <div class="stat-label">Frontend & Modern UI</div>
+            </div>
+            <div class="stat-box cinematic-glass-card">
+              <div class="stat-value">Growth</div>
+              <div class="stat-label">Continuous Learning</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCENE 3: DEVELOPER JOURNEY -->
+    <section id="journey" class="scene-section">
+      <div class="container">
+        <div class="section-tag">02 // CHRONICLES</div>
+        <h2 class="section-title">Developer Journey</h2>
+        <p class="section-subtitle">
+          From foundational curiosity to writing desktop applications, relational databases, and dynamic web interfaces.
+        </p>
+
+        <div class="timeline-track" id="journey-timeline-container">
+          <!-- Dynamically populated from portfolioData -->
+        </div>
+      </div>
+    </section>
+
+    <!-- SCENE 4: SKILLS UNIVERSE -->
+    <section id="skills" class="scene-section">
+      <div class="container">
+        <div class="section-tag">03 // CAPABILITIES UNIVERSE</div>
+        <h2 class="section-title">Skills Universe</h2>
+        <p class="section-subtitle">
+          An honest representation of my current technical toolset as a student developer actively growing each day.
+        </p>
+
+        <div class="skills-grid" id="skills-nodes-grid">
+          <!-- Dynamically populated from portfolioData -->
+        </div>
+      </div>
+    </section>
+
+    <!-- SCENE 5: FEATURED PROJECTS -->
+    <section id="projects" class="scene-section">
+      <div class="container">
+        <div class="section-tag">04 // DIGITAL WORKSPACE</div>
+        <h2 class="section-title">Projects Showcase</h2>
+        <p class="section-subtitle">
+          Explore practical applications, experiments, and interfaces built with Python, Tkinter, MySQL, and modern web tools.
+        </p>
+
+        <div class="projects-container" id="featured-projects-container">
+          <!-- Dynamically populated from portfolioData -->
+        </div>
+
+        <!-- Micro Projects Grid -->
+        <div class="micro-projects-section">
+          <div class="section-tag">EXPLORATIONS & MINI-PROJECTS</div>
+          <h3 class="section-title" style="font-size: 1.8rem;">Development Experiments</h3>
+          <div class="micro-grid" id="micro-projects-grid">
+            <!-- Dynamically populated from portfolioData -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCENE 6: CURRENTLY BUILDING (LIVE PROJECT) -->
+    <section id="live-building" class="scene-section">
+      <div class="container">
+        <div class="section-tag">05 // ACTIVE DEPLOYMENT</div>
+        <h2 class="section-title">Currently Building</h2>
+
+        <div class="live-showcase-box cinematic-glass-card" id="live-project-details">
+          <!-- Dynamically populated from portfolioData -->
+        </div>
+      </div>
+    </section>
+
+    <!-- SCENE 7: CODE & DEVELOPER SCENE -->
+    <section id="code" class="scene-section">
+      <div class="container">
+        <div class="section-tag">06 // WORKSPACE TERMINAL</div>
+        <h2 class="section-title">Code In Motion</h2>
+        <p class="section-subtitle">
+          A glimpse into the logic, database schemas, and scripting structures behind my software and web projects.
+        </p>
+
+        <div class="code-scene-window">
+          <div class="code-titlebar">
+            <div class="window-dots">
+              <span class="w-dot red"></span>
+              <span class="w-dot yellow"></span>
+              <span class="w-dot green"></span>
+            </div>
+
+            <div class="code-tabs-nav">
+              <button class="code-tab-btn active" data-tab="python">Python</button>
+              <button class="code-tab-btn" data-tab="sql">SQL</button>
+              <button class="code-tab-btn" data-tab="javascript">JavaScript</button>
+              <button class="code-tab-btn" data-tab="css">CSS</button>
+            </div>
+
+            <button id="btn-copy-code" class="hud-btn">COPY CODE</button>
+          </div>
+
+          <div style="padding: 10px 18px; background: rgba(15, 23, 42, 0.4); border-bottom: 1px solid var(--glass-border); font-family: var(--font-mono); font-size: 0.76rem; color: var(--accent-cyan);" id="code-current-filename">
+            inventory_core.py
+          </div>
+
+          <pre class="code-pre-block"><code id="code-editor-content">
+# Loading snippet...
+          </code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCENE 8: EDUCATION -->
+    <section id="education" class="scene-section">
+      <div class="container">
+        <div class="section-tag">07 // ACADEMICS</div>
+        <h2 class="section-title">Education</h2>
+
+        <div class="education-box cinematic-glass-card">
+          <h3 class="edu-degree-title" id="edu-degree">Bachelor of Computer Applications (BCA)</h3>
+          <div class="edu-status-badge" id="edu-status">1st Year — Currently Studying</div>
+
+          <p class="edu-overview-text" id="edu-overview">
+            Building foundational knowledge in programming logic, relational databases, software architecture, and computer systems.
+          </p>
+
+          <div class="edu-curriculum-grid" id="edu-curriculum-list">
+            <!-- Dynamically populated from portfolioData -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCENE 9: FUTURE VISION -->
+    <section id="future" class="scene-section">
+      <div class="container">
+        <div class="section-tag">08 // TRAJECTORY</div>
+        <h2 class="section-title">What's Next?</h2>
+        <p class="section-subtitle">
+          Long-term engineering goals, continuous development plans, and emerging technologies on my radar.
+        </p>
+
+        <div class="vision-grid" id="vision-goals-grid">
+          <!-- Dynamically populated from portfolioData -->
+        </div>
+
+        <div class="vision-conclusion-banner">
+          <div class="vision-quote">"The journey is still being written."</div>
+          <div class="vision-badge">Journey Continues... 🚀✨</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCENE 10: CONTACT -->
+    <section id="contact" class="scene-section">
+      <div class="container">
+        <div class="section-tag">09 // CONNECT</div>
+        <h2 class="section-title" style="text-align: center;">Let's Build Something.</h2>
+
+        <div class="contact-card cinematic-glass-card">
+          <p class="section-subtitle" style="margin: 0 auto 20px;">
+            Whether you want to discuss a project idea, share developer advice, or collaborate on open-source code, feel free to reach out.
+          </p>
+
+          <div class="contact-email-row">
+            <a href="mailto:harshveersingh.tech@gmail.com" class="contact-email-text" id="contact-email-display">
+              harshveersingh.tech@gmail.com
+            </a>
+            <button id="btn-copy-email" class="hud-btn" aria-label="Copy Email Address">
+              <i data-lucide="copy" class="icon-sm"></i>
+              <span>COPY EMAIL</span>
+            </button>
+          </div>
+
+          <div class="social-buttons-grid">
+            <a id="link-github" class="btn-secondary btn-magnetic" href="https://github.com/harshveer-dev" target="_blank" rel="noopener noreferrer">
+              <i data-lucide="github" class="icon-sm"></i>
+              <span>GitHub</span>
+            </a>
+            <a id="link-linkedin" class="btn-secondary btn-magnetic" href="https://www.linkedin.com/in/harsh-veer-73a053422/" target="_blank" rel="noopener noreferrer">
+              <i data-lucide="linkedin" class="icon-sm"></i>
+              <span>LinkedIn</span>
+            </a>
+            <a id="link-instagram" class="btn-secondary btn-magnetic" href="https://www.instagram.com/tf.veerrrr/" target="_blank" rel="noopener noreferrer">
+              <i data-lucide="instagram" class="icon-sm"></i>
+              <span>Instagram</span>
+            </a>
+            <a id="link-email" class="btn-primary btn-magnetic" href="mailto:harshveersingh.tech@gmail.com">
+              <i data-lucide="mail" class="icon-sm"></i>
+              <span>Send Email</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Minimal Premium Footer -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-brand">Harshveer Singh</div>
+      <div class="footer-role">Developer • BCA Student</div>
+
+      <ul class="footer-links">
+        <li><a id="footer-link-github" href="https://github.com/harshveer-dev" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a id="footer-link-linkedin" href="https://www.linkedin.com/in/harsh-veer-73a053422/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+        <li><a id="footer-link-instagram" href="https://www.instagram.com/tf.veerrrr/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+        <li><a id="footer-link-email" href="mailto:harshveersingh.tech@gmail.com">Email</a></li>
+      </ul>
+
+      <div class="footer-copy">
+        &copy; 2026 Harshveer Singh. Crafted with Three.js, WebGL & Passion for Software.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Floating Cinematic HUD Bottom Status -->
+  <div class="cinematic-hud-bottom" aria-hidden="true">
+    <div class="hud-indicator" id="hud-scene-name">HERO</div>
+    <div class="hud-indicator" id="hud-depth-metric">DEPTH: 7m // SCENE: 0%</div>
+  </div>
+
+  <!-- Application Scripts -->
+  <script type="module" src="src/main.js?v=2.3"></script>
+</body>
+</html>
