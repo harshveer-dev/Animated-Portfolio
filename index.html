@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
   
   <!-- Primary SEO Metadata -->
   <title>Harshveer Singh | Developer Portfolio</title>
@@ -36,9 +36,24 @@
   <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
 
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="style.css?v=2.3">
+  <link rel="stylesheet" href="style.css?v=2.4">
 </head>
 <body>
+
+  <!-- Cinematic Smooth Entrance Screen Curtain (Fades out when site is ready) -->
+  <div id="site-loader" class="site-loader" aria-label="Loading Cinematic Experience">
+    <div class="loader-content">
+      <div class="loader-ring">
+        <div class="loader-ring-inner"></div>
+        <div class="loader-dot"></div>
+      </div>
+      <div class="loader-brand">HARSHVEER</div>
+      <div class="loader-status" id="loader-status">INITIALIZING SYSTEM...</div>
+      <div class="loader-bar-track">
+        <div class="loader-bar-fill" id="loader-bar-fill"></div>
+      </div>
+    </div>
+  </div>
 
   <!-- Peaceful Celestial Horizon Backdrop (Fixed across entire site, never disappears) -->
   <div class="peaceful-backdrop" aria-hidden="true">
@@ -63,6 +78,7 @@
         <span class="brand-name">HARSHVEER</span>
       </a>
 
+      <!-- Desktop Navigation Links -->
       <ul class="nav-links">
         <li><a href="#hero" class="nav-link active">Home</a></li>
         <li><a href="#about" class="nav-link">About</a></li>
@@ -76,6 +92,7 @@
         <li><a href="#contact" class="nav-link">Contact</a></li>
       </ul>
 
+      <!-- Nav Actions & Mobile Menu Button -->
       <div class="nav-actions">
         <button id="hud-audio-btn" class="hud-btn" aria-label="Toggle Audio Effects">
           <i data-lucide="volume-x" class="icon-xs"></i>
@@ -83,11 +100,57 @@
         </button>
         <button id="hud-studio-btn" class="hud-btn" aria-label="Open Cinematic Studio Tuner">
           <i data-lucide="sliders" class="icon-xs"></i>
-          <span>TUNER</span>
+          <span class="hud-btn-label">TUNER</span>
+        </button>
+        <button id="mobile-menu-toggle" class="mobile-hamburger-btn" aria-label="Toggle Navigation Menu" aria-expanded="false" aria-controls="mobile-nav-drawer">
+          <span class="hamburger-bar"></span>
+          <span class="hamburger-bar"></span>
+          <span class="hamburger-bar"></span>
         </button>
       </div>
     </nav>
   </header>
+
+  <!-- Mobile Navigation Backdrop & Sliding Drawer Menu -->
+  <div class="mobile-nav-backdrop" id="mobile-nav-backdrop" aria-hidden="true"></div>
+  <nav class="mobile-nav-drawer" id="mobile-nav-drawer" aria-label="Mobile Navigation Menu" aria-hidden="true">
+    <div class="mobile-nav-header">
+      <div class="mobile-nav-brand">
+        <span class="brand-dot"></span>
+        <span class="mobile-brand-text">HARSHVEER</span>
+      </div>
+      <button class="mobile-nav-close" id="mobile-nav-close" aria-label="Close Navigation Menu">&times;</button>
+    </div>
+
+    <div class="mobile-nav-body">
+      <ul class="mobile-nav-links">
+        <li><a href="#hero" class="mobile-nav-link active"><i data-lucide="home" class="icon-sm"></i><span>Home</span></a></li>
+        <li><a href="#about" class="mobile-nav-link"><i data-lucide="user" class="icon-sm"></i><span>About</span></a></li>
+        <li><a href="#journey" class="mobile-nav-link"><i data-lucide="compass" class="icon-sm"></i><span>Journey</span></a></li>
+        <li><a href="#skills" class="mobile-nav-link"><i data-lucide="cpu" class="icon-sm"></i><span>Skills</span></a></li>
+        <li><a href="#projects" class="mobile-nav-link"><i data-lucide="folder-git-2" class="icon-sm"></i><span>Projects</span></a></li>
+        <li><a href="#live-building" class="mobile-nav-link"><i data-lucide="activity" class="icon-sm"></i><span>Live Platform</span></a></li>
+        <li><a href="#code" class="mobile-nav-link"><i data-lucide="code" class="icon-sm"></i><span>Code In Motion</span></a></li>
+        <li><a href="#education" class="mobile-nav-link"><i data-lucide="graduation-cap" class="icon-sm"></i><span>Education</span></a></li>
+        <li><a href="#future" class="mobile-nav-link"><i data-lucide="rocket" class="icon-sm"></i><span>Vision</span></a></li>
+        <li><a href="#contact" class="mobile-nav-link"><i data-lucide="send" class="icon-sm"></i><span>Contact</span></a></li>
+      </ul>
+    </div>
+
+    <div class="mobile-nav-footer">
+      <div class="mobile-nav-meta">BCA 1ST YEAR • STUDENT DEVELOPER</div>
+      <div class="mobile-nav-actions-row">
+        <button id="mobile-audio-btn" class="hud-btn" aria-label="Toggle Audio Effects">
+          <i data-lucide="volume-x" class="icon-xs"></i>
+          <span>AUDIO SFX</span>
+        </button>
+        <button id="mobile-studio-btn" class="hud-btn" aria-label="Open Studio Tuner">
+          <i data-lucide="sliders" class="icon-xs"></i>
+          <span>TUNER</span>
+        </button>
+      </div>
+    </div>
+  </nav>
 
   <!-- Cinematic Studio Drawer Panel (Live Tuning Controls) -->
   <aside class="cinematic-studio-panel" id="cinematic-studio-panel" aria-label="Cinematic Studio Tuner">

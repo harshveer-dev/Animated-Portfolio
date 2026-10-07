@@ -29,14 +29,17 @@ export class ScrollChoreographer {
   setupSmoothScroll() {
     // If Lenis is loaded and reduced motion is false, use momentum inertia smooth scrolling
     if (typeof window.Lenis !== 'undefined' && !this.prefersReducedMotion) {
+      const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || window.innerWidth < 768;
+
       this.lenis = new window.Lenis({
-        duration: 1.25,
+        duration: isTouch ? 1.0 : 1.25,
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
         orientation: 'vertical',
         gestureOrientation: 'vertical',
         smoothWheel: true,
+        smoothTouch: false, // Clean native touch momentum with synchronized frame updates
         wheelMultiplier: 1.0,
-        touchMultiplier: 1.6,
+        touchMultiplier: 1.0,
         infinite: false
       });
 
@@ -60,21 +63,22 @@ export class ScrollChoreographer {
       const initialProgress = this.lenis.limit > 0 ? this.lenis.scroll / this.lenis.limit : 0;
       this.broadcastProgress(initialProgress);
 
-      // Recalibrate on load and resize to ensure exact scroll bounding
-      window.addEventListener('load', () => {
+      // Recalibrate on load, fonts ready, and resize to ensure exact scroll bounding
+      const recalibrate = () => {
         if (this.lenis) {
           this.lenis.resize();
           const limit = this.lenis.limit;
           const prog = limit > 0 ? Math.max(0, Math.min(1, this.lenis.scroll / limit)) : 0;
           this.broadcastProgress(prog);
         }
-      });
+      };
 
-      window.addEventListener('resize', () => {
-        if (this.lenis) {
-          this.lenis.resize();
-        }
-      });
+      window.addEventListener('load', recalibrate);
+      window.addEventListener('resize', recalibrate);
+      window.addEventListener('orientationchange', () => setTimeout(recalibrate, 250));
+      if (document.fonts) {
+        document.fonts.ready.then(recalibrate);
+      }
     } else {
       // Fallback native scroll listener
       this.setupNativeScrollListener();
@@ -104,6 +108,7 @@ export class ScrollChoreographer {
     updateProgress();
     window.addEventListener('load', updateProgress);
     window.addEventListener('resize', updateProgress);
+    window.addEventListener('orientationchange', () => setTimeout(updateProgress, 250));
   }
 
   broadcastProgress(progress) {
@@ -158,7 +163,8 @@ export class ScrollChoreographer {
   }
 
   updateActiveNav(activeId) {
-    this.navLinks.forEach(link => {
+    const allNavLinks = document.querySelectorAll('.nav-link, .mobile-nav-link');
+    allNavLinks.forEach(link => {
       const href = link.getAttribute('href');
       if (href === `#${activeId}`) {
         link.classList.add('active');
@@ -183,16 +189,26 @@ export class ScrollChoreographer {
         if (targetElem) {
           e.preventDefault();
           soundFx.playClick();
+
+          // Close mobile drawer if open
+          window.dispatchEvent(new CustomEvent('close-mobile-nav'));
+
+          // Dynamic offset accounting for fixed nav height
+          const navEl = document.querySelector('.cinematic-nav');
+          const navHeight = navEl ? navEl.offsetHeight : 70;
+          const scrollOffset = -(navHeight + 16);
+
           if (this.lenis) {
             this.lenis.scrollTo(targetElem, {
-              duration: 1.3,
-              offset: 0,
+              duration: 1.25,
+              offset: scrollOffset,
               easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
             });
           } else {
-            targetElem.scrollIntoView({
-              behavior: this.prefersReducedMotion ? 'auto' : 'smooth',
-              block: 'start'
+            const elTop = targetElem.getBoundingClientRect().top + window.pageYOffset + scrollOffset;
+            window.scrollTo({
+              top: elTop,
+              behavior: this.prefersReducedMotion ? 'auto' : 'smooth'
             });
           }
         }

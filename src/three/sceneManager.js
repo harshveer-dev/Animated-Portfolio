@@ -77,22 +77,29 @@ export class CinematicSceneManager {
     this.scene = new THREE.Scene();
     this.scene.fog = new THREE.FogExp2(0x070913, 0.016);
 
-    // 3. Setup Camera
-    this.camera = new THREE.PerspectiveCamera(52, this.width / this.height, 0.1, 350);
+    // 3. Setup Camera with responsive mobile framing
+    const isMobile = this.width < 768;
+    const baseFov = isMobile ? 66 : 52;
+    this.camera = new THREE.PerspectiveCamera(baseFov, this.width / this.height, 0.1, 350);
     this.camera.position.set(0, 0, 7);
 
     // 4. Setup Renderer
     this.renderer = new THREE.WebGLRenderer({
-      antialias: true,
+      antialias: !isMobile,
       alpha: true,
-      powerPreference: 'high-performance'
+      powerPreference: isMobile ? 'default' : 'high-performance'
     });
     this.renderer.setSize(this.width, this.height);
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.8)); // Capped for butter-smooth framerate
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.5 : 1.8)); // Capped for butter-smooth framerate
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1.15;
     this.renderer.setClearColor(0x000000, 0);
     this.container.appendChild(this.renderer.domElement);
+
+    // Graceful context loss management for mobile app switching
+    this.renderer.domElement.addEventListener('webglcontextlost', (e) => {
+      e.preventDefault();
+    }, false);
 
     // 5. Setup Cinematic Lighting
     this.setupLighting();
@@ -131,16 +138,20 @@ export class CinematicSceneManager {
 
   addEvents() {
     window.addEventListener('resize', this.onResize.bind(this));
-    window.addEventListener('mousemove', this.onMouseMove.bind(this));
+    window.addEventListener('orientationchange', () => setTimeout(this.onResize.bind(this), 250));
+    window.addEventListener('mousemove', this.onMouseMove.bind(this), { passive: true });
   }
 
   onResize() {
     this.width = window.innerWidth;
     this.height = window.innerHeight;
     if (this.camera && this.renderer) {
+      const isMobile = this.width < 768;
+      this.camera.fov = isMobile ? 66 : 52;
       this.camera.aspect = this.width / this.height;
       this.camera.updateProjectionMatrix();
       this.renderer.setSize(this.width, this.height);
+      this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.5 : 1.8));
     }
   }
 
@@ -157,20 +168,23 @@ export class CinematicSceneManager {
     const zEnd = -this.config.motion.zoomAmount;
     this.targetCameraZ = zStart + (zEnd - zStart) * this.scrollProgress;
 
-    // Dynamic camera offsets for cinematic cinematography
+    const isMobile = this.width < 768;
+    const xRatio = isMobile ? 0.45 : 1.0;
+
+    // Dynamic camera offsets for cinematic cinematography (tamed for mobile screens)
     if (this.scrollProgress < 0.15) {
       this.targetCameraX = 0;
       this.targetCameraY = 0;
       this.targetLookZ = this.targetCameraZ - 8;
     } else if (this.scrollProgress < 0.32) {
       // Move camera left to look toward right-hand laptop workspace
-      this.targetCameraX = -1.8;
-      this.targetCameraY = 0.5;
+      this.targetCameraX = -1.8 * xRatio;
+      this.targetCameraY = isMobile ? 0.3 : 0.5;
       this.targetLookZ = this.targetCameraZ - 8;
     } else if (this.scrollProgress < 0.48) {
       // Slight serpentine weave for journey
       const p = (this.scrollProgress - 0.32) / 0.16;
-      this.targetCameraX = Math.sin(p * Math.PI * 2) * 1.5;
+      this.targetCameraX = Math.sin(p * Math.PI * 2) * (1.5 * xRatio);
       this.targetCameraY = 0.2;
       this.targetLookZ = this.targetCameraZ - 6;
     } else if (this.scrollProgress < 0.64) {
@@ -204,10 +218,16 @@ export class CinematicSceneManager {
     const speedMult = this.config.motion.animationSpeed;
     const elapsedTime = this.clock.getElapsedTime() * speedMult;
 
+    // Subtle autonomous float if user is on mobile / not moving cursor
+    const autoX = Math.sin(elapsedTime * 0.4) * 0.15;
+    const autoY = Math.cos(elapsedTime * 0.3) * 0.1;
+    const targetX = this.mouse.targetX || autoX;
+    const targetY = this.mouse.targetY || autoY;
+
     // Mouse smoothing (lerp) & configurable parallax
     const parallaxFactor = this.config.motion.parallaxStrength * 10;
-    this.mouse.x += (this.mouse.targetX - this.mouse.x) * 0.05;
-    this.mouse.y += (this.mouse.targetY - this.mouse.y) * 0.05;
+    this.mouse.x += (targetX - this.mouse.x) * 0.05;
+    this.mouse.y += (targetY - this.mouse.y) * 0.05;
 
     // Smooth camera motion
     const lerpFactor = 0.06;
